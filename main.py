@@ -18,14 +18,18 @@ class Game:
         self.dir = os.path.dirname(__file__)
         img_dir = os.path.join(self.dir, 'Assets')
 
-        self.terrainsheet = Spritesheet(os.path.join(img_dir, SPRITESHEETTERRAIN))
+        self.terrainsheet = Spritesheet(
+            os.path.join(img_dir, SPRITESHEETTERRAIN))
         self.playersheet = Spritesheet(os.path.join(img_dir, PLAYERSHEET))
 
     def new(self):
         # Initialise toute les variables et fait le setup pour un nouveau jeu
         self.all_sprites = pg.sprite.Group()
-        self.walls = pg.sprite.Group()
-        self.player = Player(self, 10, 10)
+        self.terrain = pg.sprite.Group()
+        self.player = Player(self)
+        p1 = Terrain(0, HEIGHT - 40, WIDTH, 40)
+        self.all_sprites.add(p1)
+        self.terrain.add(p1)
 
     def run(self):
         self.playing = True
@@ -42,12 +46,16 @@ class Game:
     def update(self):
         self.all_sprites.update()
 
+        hits = pg.sprite.spritecollide(self.player, self.terrain, False)
+        if hits:
+            self.player.pos.y = hits[0].rect.top + 0.3
+            self.player.vel.y = 0
+
     def draw_grid(self):
         for x in range(0, WIDTH, TILESIZE):
             pg.draw.line(self.screen, LIGHTGREY, (x, 0), (x, HEIGHT))
         for y in range(0, HEIGHT, TILESIZE):
             pg.draw.line(self.screen, LIGHTGREY, (0, y), (WIDTH, y))
-    
 
     def draw(self):
         self.screen.fill(DARKGREY)

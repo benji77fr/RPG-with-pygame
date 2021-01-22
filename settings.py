@@ -19,8 +19,9 @@ GRIDHEIGHT = HEIGHT / TILESIZE
 
 # Player settings
 
-PLAYER_SPEED = 300
-VELOCITY = 3.0
+PLAYER_ACC = 0.5
+PLAYER_FRICTION = -0.12
+
 
 SPRITESHEETTERRAIN = 'Grass_dirt_tileset.png'
 PLAYERSHEET = 'Player_anim_sheet.png'
