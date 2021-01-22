@@ -2,6 +2,7 @@ import pygame as pg
 import sys
 from settings import *
 from sprites import *
+from spritesheet import *
 
 
 class Game:
@@ -14,7 +15,11 @@ class Game:
         self.load_data()
 
     def load_data(self):
-        pass
+        self.dir = os.path.dirname(__file__)
+        img_dir = os.path.join(self.dir, 'Assets')
+
+        self.terrainsheet = Spritesheet(os.path.join(img_dir, SPRITESHEETTERRAIN))
+        self.playersheet = Spritesheet(os.path.join(img_dir, PLAYERSHEET))
 
     def new(self):
         # Initialise toute les variables et fait le setup pour un nouveau jeu
@@ -42,6 +47,7 @@ class Game:
             pg.draw.line(self.screen, LIGHTGREY, (x, 0), (x, HEIGHT))
         for y in range(0, HEIGHT, TILESIZE):
             pg.draw.line(self.screen, LIGHTGREY, (0, y), (WIDTH, y))
+    
 
     def draw(self):
         self.screen.fill(DARKGREY)

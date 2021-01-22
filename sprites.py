@@ -9,9 +9,9 @@ class Player(pg.sprite.Sprite):
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
         # self.image = pg.Surface((24, 35))
-        self.image = pg.image.load(
-            os.path.join('Python/Assets', 'Player.png')
-        )
+        self.image = self.game.playersheet.get_image(12,5,24,35)
+        self.image_size = self.image.get_size()
+        self.image = pg.transform.scale(self.image,(int(self.image_size[0]*2.5), int(self.image_size[1]*2.5)))
         self.rect = self.image.get_rect()
         self.vx, self.vy = 0, 0
         self.x = x * TILESIZE

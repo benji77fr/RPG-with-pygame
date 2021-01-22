@@ -9,15 +9,18 @@ YELLOW = (255, 255, 0)
 
 
 # game settings
-WIDTH = 1024
-HEIGHT = 768
+WIDTH = 1200
+HEIGHT = 800
 FPS = 144
 TITLE = "RPG with Python"
-TILESIZE = 32
+TILESIZE = 64
 GRIDWIDTH = WIDTH / TILESIZE
 GRIDHEIGHT = HEIGHT / TILESIZE
 
 # Player settings
 
-PLAYER_SPEED = 100
+PLAYER_SPEED = 300
 VELOCITY = 3.0
+
+SPRITESHEETTERRAIN = 'Grass_dirt_tileset.png'
+PLAYERSHEET = 'Player_anim_sheet.png'
