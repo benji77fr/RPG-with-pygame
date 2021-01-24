@@ -40,7 +40,6 @@ class Player(pg.sprite.Sprite):
             self.walk_frames_l.append(pg.transform.flip(frame, True, False))
 
     def get_keys(self):
-        self.accel = vec(0, PLAYER_GRAV)
         keys = pg.key.get_pressed()
         if keys[pg.K_LEFT] or keys[pg.K_q]:
             self.accel.x = -PLAYER_ACC
@@ -53,7 +52,9 @@ class Player(pg.sprite.Sprite):
             self.vel.y = -20
 
     def update(self):
+
         self.animate()
+        self.accel = vec(0, PLAYER_GRAV)
         self.get_keys()
 
         self.accel.x += self.vel.x * PLAYER_FRICTION
