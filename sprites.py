@@ -11,15 +11,33 @@ class Player(pg.sprite.Sprite):
         self.groups = game.all_sprites
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
-        self.image = self.game.playersheet.get_image(12, 2, 24, 35)
-        self.image_size = self.image.get_size()
-        self.image = pg.transform.scale(
-            self.image, (int(self.image_size[0]*2), int(self.image_size[1]*2)))
+        self.walking = False
+        self.jumping = False
+        self.current_frame = 0
+        self.last_update = 0
+        self.load_images()
+        self.image = self.standing_frames[0]
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
         self.pos = vec(x, y)
         self.vel = vec(0, 0)
         self.accel = vec(0, 0)
+
+    def load_images(self):
+        self.standing_frames = [self.game.playersheet.get_image(0, 0, 50, 37),
+                                self.game.playersheet.get_image(50, 0, 50, 37),
+                                self.game.playersheet.get_image(
+                                    100, 0, 50, 37),
+                                self.game.playersheet.get_image(150, 0, 50, 37)]
+        self.walk_frames_r = [self.game.playersheet.get_image(50, 37, 50, 37),
+                              self.game.playersheet.get_image(100, 37, 50, 37),
+                              self.game.playersheet.get_image(150, 37, 50, 37),
+                              self.game.playersheet.get_image(200, 37, 50, 37),
+                              self.game.playersheet.get_image(250, 37, 50, 37),
+                              self.game.playersheet.get_image(300, 37, 50, 37)]
+        self.walk_frames_l = []
+        for frame in self.walk_frames_r:
+            self.walk_frames_l.append(pg.transform.flip(frame, True, False))
 
     def get_keys(self):
         self.accel = vec(0, PLAYER_GRAV)
@@ -35,6 +53,7 @@ class Player(pg.sprite.Sprite):
             self.vel.y = -20
 
     def update(self):
+        self.animate()
         self.get_keys()
 
         self.accel.x += self.vel.x * PLAYER_FRICTION
@@ -49,12 +68,32 @@ class Player(pg.sprite.Sprite):
 
         self.rect.midbottom = self.pos
 
+    def animate(self):
+        now = pg.time.get_ticks()
+        if self.vel.x != 0:
+            self.walking = True
+        else:
+            self.walking = False
 
-class Terrain(pg.sprite.Sprite):
-    def __init__(self, x, y, width, height):
-        pg.sprite.Sprite.__init__(self)
-        self.image = pg.Surface((width, height))
-        self.image.fill(GREEN)
-        self.rect = self.image.get_rect()
-        self.rect.x = x
-        self.rect.y = y
+        if self.walking:
+            if now - self.last_update > 180:
+                self.last_update = now
+                self.current_frame = (
+                    self.current_frame + 1) % len(self.walk_frames_l)
+                bottom = self.rect.bottom
+                if self.vel.x > 0:
+                    self.image = self.walk_frames_r[self.current_frame]
+                else:
+                    self.image = self.walk_frames_l[self.current_frame]
+                self.rect = self.image.get_rect()
+                self.rect.bottom = bottom
+
+        if not self.jumping and not self.walking:
+            if now - self.last_update > 350:
+                self.last_update = now
+                self.current_frame = (
+                    self.current_frame + 1) % len(self.standing_frames)
+                bottom = self.rect.bottom
+                self.image = self.standing_frames[self.current_frame]
+                self.rect = self.image.get_rect()
+                self.rect.bottom = bottom

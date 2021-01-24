@@ -1,4 +1,3 @@
-from settings import HEIGHT, WIDTH
 import pygame as pg
 import pytmx
 from settings import *

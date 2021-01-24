@@ -15,4 +15,5 @@ class Spritesheet:
         image.blit(self.sheet, (0, 0), (x, y, width, height))
         colorkey = image.get_at((0, 0))
         image.set_colorkey(colorkey, pg.RLEACCEL)
+        image = pg.transform.scale(image, (width * 2, height * 2))
         return image

@@ -2,6 +2,7 @@ from spritesheet import *
 from sprites import *
 from settings import *
 from mapgen import *
+#from camera import *
 import sys
 import pygame as pg
 vec = pg.math.Vector2
