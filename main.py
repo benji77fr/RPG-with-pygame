@@ -1,8 +1,10 @@
-import pygame as pg
-import sys
-from settings import *
-from sprites import *
 from spritesheet import *
+from sprites import *
+from settings import *
+from mapgen import *
+import sys
+import pygame as pg
+vec = pg.math.Vector2
 
 
 class Game:
@@ -15,21 +17,29 @@ class Game:
         self.load_data()
 
     def load_data(self):
-        self.dir = os.path.dirname(__file__)
-        img_dir = os.path.join(self.dir, 'Assets')
+        game_folder = os.path.dirname(__file__)
+        asset_folder = os.path.join(game_folder, 'Assets')
+        img_dir = os.path.join(asset_folder, 'Image')
+        self.map_dir = os.path.join(asset_folder, 'Map')
 
-        self.terrainsheet = Spritesheet(
-            os.path.join(img_dir, SPRITESHEETTERRAIN))
         self.playersheet = Spritesheet(os.path.join(img_dir, PLAYERSHEET))
 
     def new(self):
         # Initialise toute les variables et fait le setup pour un nouveau jeu
-        self.all_sprites = pg.sprite.Group()
-        self.terrain = pg.sprite.Group()
-        self.player = Player(self)
-        p1 = Terrain(0, HEIGHT - 40, WIDTH, 40)
-        self.all_sprites.add(p1)
-        self.terrain.add(p1)
+        self.all_sprites = pg.sprite.LayeredUpdates()
+        self.ground = pg.sprite.Group()
+        self.map = TileMap(os.path.join(self.map_dir, 'level1.tmx'))
+        self.map_img = self.map.make_map()
+        self.map.rect = self.map_img.get_rect()
+        self.layer = self.map.tmxdata.get_layer_by_name('Ground')
+        for x, y, image in self.layer.tiles():
+            self.ground.add(Tile(x, y, image))
+        for tile_object in self.map.tmxdata.objects:
+            obj_center = vec(tile_object.x + tile_object.width / 2,
+                             tile_object.y + tile_object.height / 2)
+            if tile_object.name == 'player':
+                self.player = Player(self, obj_center.x, obj_center.y)
+        self.camera = Camera(self.map.width, self.map.height)
 
     def run(self):
         self.playing = True
@@ -45,11 +55,14 @@ class Game:
 
     def update(self):
         self.all_sprites.update()
+        self.camera.update(self.player)
 
-        hits = pg.sprite.spritecollide(self.player, self.terrain, False)
-        if hits:
-            self.player.pos.y = hits[0].rect.top + 0.3
-            self.player.vel.y = 0
+        if self.player.vel.y > 0:
+            hits = pg.sprite.spritecollide(
+                self.player, self.ground, False)
+            if hits:
+                self.player.pos.y = hits[0].rect.top + 0.1
+                self.player.vel.y = 0
 
     def draw_grid(self):
         for x in range(0, WIDTH, TILESIZE):
@@ -58,7 +71,8 @@ class Game:
             pg.draw.line(self.screen, LIGHTGREY, (0, y), (WIDTH, y))
 
     def draw(self):
-        self.screen.fill(DARKGREY)
+        # self.screen.fill(DARKGREY)
+        self.screen.blit(self.map_img, self.camera.apply(self.map))
         self.draw_grid()
         self.all_sprites.draw(self.screen)
         pg.display.flip()
@@ -70,6 +84,8 @@ class Game:
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_ESCAPE:
                     self.quit()
+                if event.key == pg.K_SPACE:
+                    self.player.jump()
 
     def show_start_screen(self):
         pass
