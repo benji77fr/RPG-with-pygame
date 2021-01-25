@@ -38,7 +38,6 @@ class Player(pg.sprite.Sprite):
         self.walk_frames_l = []
         for frame in self.walk_frames_r:
             self.walk_frames_l.append(pg.transform.flip(frame, True, False))
-        
 
     def jump(self):
         hits = pg.sprite.spritecollide(self, self.game.ground, False)
@@ -62,10 +61,10 @@ class Player(pg.sprite.Sprite):
             self.vel.x = 0
         self.pos += self.vel + 0.5 * self.accel
 
-        if self.pos.x > 600:
-            self.pos.x = 0
-        if self.pos.x < 0:
-            self.pos.x = 600
+        if self.pos.x > WIDTH + self.rect.width / 2:
+            self.pos.x = 0 - self.rect.width / 2
+        if self.pos.x < 0 - self.rect.width / 2:
+            self.pos.x = WIDTH + self.rect.width / 2
 
         self.rect.midbottom = self.pos
 

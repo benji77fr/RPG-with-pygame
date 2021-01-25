@@ -73,11 +73,13 @@ class Game:
             pg.draw.line(self.screen, LIGHTGREY, (0, y), (WIDTH, y))
 
     def draw(self):
-        # self.screen.fill(DARKGREY)
         self.display.blit(self.map_img, self.camera.apply(self.map))
-        self.screen.blit(pg.transform.scale(self.display, self.screen.get_rect().size, self.screen), (0,0))
+        for sprite in self.all_sprites:
+            self.display.blit(sprite.image, self.camera.apply(sprite))
+        self.screen.blit(pg.transform.scale(
+            self.display, self.screen.get_rect().size), (0, 0))
         # self.draw_grid()
-        self.all_sprites.draw(self.screen)
+
         pg.display.update()
 
     def events(self):
