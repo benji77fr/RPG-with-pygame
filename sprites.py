@@ -17,6 +17,7 @@ class Player(pg.sprite.Sprite):
         self.last_update = 0
         self.load_images()
         self.image = self.standing_frames[0]
+        #self.image = pg.transform.scale(self.image, (int(self.image_size[0] * 2), int(self.image_size[1] * 2)))
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
         self.pos = vec(x, y)
@@ -38,13 +39,7 @@ class Player(pg.sprite.Sprite):
         self.walk_frames_l = []
         for frame in self.walk_frames_r:
             self.walk_frames_l.append(pg.transform.flip(frame, True, False))
-
-    def get_keys(self):
-        keys = pg.key.get_pressed()
-        if keys[pg.K_LEFT] or keys[pg.K_q]:
-            self.accel.x = -PLAYER_ACC
-        if keys[pg.K_RIGHT] or keys[pg.K_d]:
-            self.accel.x = PLAYER_ACC
+        
 
     def jump(self):
         hits = pg.sprite.spritecollide(self, self.game.ground, False)
@@ -55,17 +50,23 @@ class Player(pg.sprite.Sprite):
 
         self.animate()
         self.accel = vec(0, PLAYER_GRAV)
-        self.get_keys()
+        keys = pg.key.get_pressed()
+        if keys[pg.K_LEFT] or keys[pg.K_q]:
+            self.accel.x = -PLAYER_ACC
+        if keys[pg.K_RIGHT] or keys[pg.K_d]:
+            self.accel.x = PLAYER_ACC
 
         self.accel.x += self.vel.x * PLAYER_FRICTION
 
         self.vel += self.accel
+        if abs(self.vel.x) < 0.1:
+            self.vel.x = 0
         self.pos += self.vel + 0.5 * self.accel
 
-        if self.pos.x > WIDTH:
+        if self.pos.x > 600:
             self.pos.x = 0
         if self.pos.x < 0:
-            self.pos.x = WIDTH
+            self.pos.x = 600
 
         self.rect.midbottom = self.pos
 

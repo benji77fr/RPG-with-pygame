@@ -12,6 +12,7 @@ class Game:
     def __init__(self):
         pg.init()
         self.screen = pg.display.set_mode((WIDTH, HEIGHT))
+        self.display = pg.Surface((600, 400))
         pg.display.set_caption(TITLE)
         self.clock = pg.time.Clock()
         pg.key.set_repeat(500, 100)
@@ -73,10 +74,11 @@ class Game:
 
     def draw(self):
         # self.screen.fill(DARKGREY)
-        self.screen.blit(self.map_img, self.camera.apply(self.map))
-        self.draw_grid()
+        self.display.blit(self.map_img, self.camera.apply(self.map))
+        self.screen.blit(pg.transform.scale(self.display, self.screen.get_rect().size, self.screen), (0,0))
+        # self.draw_grid()
         self.all_sprites.draw(self.screen)
-        pg.display.flip()
+        pg.display.update()
 
     def events(self):
         for event in pg.event.get():

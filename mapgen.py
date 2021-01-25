@@ -49,11 +49,11 @@ class Camera:
         return rect.move(self.camera.topleft)
 
     def update(self, target):
-        x = -target.rect.centerx + int(WIDTH / 2)
-        y = -target.rect.centery + int(HEIGHT / 2)
+        x = -target.rect.centerx + int(400 / 2)
+        y = -target.rect.centery + int(600 / 2)
 
         x = min(0, x)
         y = min(0, y)
-        x = max(-(self.width - WIDTH), x)
-        y = max(-(self.height - HEIGHT), y)
+        x = max(-(self.width - WIDTH / 2), x)
+        y = max(-(self.height - HEIGHT / 2), y)
         self.camera = pg.Rect(x, y, self.width, self.height)
