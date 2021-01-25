@@ -17,7 +17,6 @@ class Player(pg.sprite.Sprite):
         self.last_update = 0
         self.load_images()
         self.image = self.standing_frames[0]
-        #self.image = pg.transform.scale(self.image, (int(self.image_size[0] * 2), int(self.image_size[1] * 2)))
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
         self.pos = vec(x, y)
