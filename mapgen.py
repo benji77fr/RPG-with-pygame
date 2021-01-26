@@ -51,7 +51,6 @@ class Camera:
     def update(self, target):
         x = -target.rect.centerx + int(600 / 2)
         y = -target.rect.centery + int(400 / 2)
-        print(x, y)
 
         x = min(0, x)
         y = min(0, y)

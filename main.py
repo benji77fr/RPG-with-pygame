@@ -65,6 +65,7 @@ class Game:
             if hits:
                 self.player.pos.y = hits[0].rect.top + 0.1
                 self.player.vel.y = 0
+                self.player.jumping = False
 
     def draw_grid(self):
         for x in range(0, WIDTH, TILESIZE):
