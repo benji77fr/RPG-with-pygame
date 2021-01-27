@@ -90,8 +90,7 @@ class Game:
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_ESCAPE:
                     self.quit()
-                if event.key == pg.K_SPACE:
-                    self.player.jump()
+                
 
     def show_start_screen(self):
         pass

@@ -13,6 +13,7 @@ class Player(pg.sprite.Sprite):
         self.game = game
         self.walking = False
         self.jumping = False
+        self.crouching = False
         self.current_frame = 0
         self.last_update = 0
         self.load_images()
@@ -39,18 +40,33 @@ class Player(pg.sprite.Sprite):
         for frame in self.walk_frames_r:
             self.walk_frames_l.append(pg.transform.flip(frame, True, False))
         self.jumping_frames_r = [self.game.playersheet.get_image(0, 74, 50, 37),
-                              self.game.playersheet.get_image(50, 74, 50, 37),
-                              self.game.playersheet.get_image(100, 74, 50, 37),
-                              self.game.playersheet.get_image(150, 74, 50, 37),
-                              self.game.playersheet.get_image(200, 74, 50, 37),
-                              self.game.playersheet.get_image(250, 74, 50, 37),
-                              self.game.playersheet.get_image(300, 74, 50, 37),
-                              self.game.playersheet.get_image(0, 111, 50, 37),
-                              self.game.playersheet.get_image(50, 111, 50, 37),
-                              self.game.playersheet.get_image(100, 111, 50, 37),]
+                                 self.game.playersheet.get_image(
+                                     50, 74, 50, 37),
+                                 self.game.playersheet.get_image(
+                                     100, 74, 50, 37),
+                                 self.game.playersheet.get_image(
+                                     150, 74, 50, 37),
+                                 self.game.playersheet.get_image(
+                                     200, 74, 50, 37),
+                                 self.game.playersheet.get_image(
+                                     250, 74, 50, 37),
+                                 self.game.playersheet.get_image(
+                                     300, 74, 50, 37),
+                                 self.game.playersheet.get_image(
+                                     0, 111, 50, 37),
+                                 self.game.playersheet.get_image(
+                                     50, 111, 50, 37),
+                                 self.game.playersheet.get_image(100, 111, 50, 37), ]
         self.jumping_frames_l = []
         for frame in self.jumping_frames_r:
             self.jumping_frames_l.append(pg.transform.flip(frame, True, False))
+        self.crouch_frame_r = [self.game.playersheet.get_image(200, 0, 50, 37),
+                               self.game.playersheet.get_image(250, 0, 50, 37),
+                               self.game.playersheet.get_image(300, 0, 50, 37),
+                               self.game.playersheet.get_image(0, 37, 50, 37)]
+        self.crouch_frame_l = []
+        for frame in self.crouch_frame_r:
+            self.crouch_frame_l.append(pg.transform.flip(frame, True, False))
 
     def jump_cut(self):
         if self.jumping:
@@ -63,15 +79,25 @@ class Player(pg.sprite.Sprite):
             self.jumping = True
             self.vel.y = -20
 
+    def get_keys(self, keys):
+        if keys[pg.K_LEFT] or keys[pg.K_q]:
+            self.accel.x = -PLAYER_ACC
+        if keys[pg.K_RIGHT] or keys[pg.K_d]:
+            self.accel.x = PLAYER_ACC
+        if keys[pg.K_c]:
+            self.crouching = True
+        else:
+            self.crouching = False
+        if keys[pg.K_SPACE]:
+            self.jump()
+
     def update(self):
 
         self.animate()
         self.accel = vec(0, PLAYER_GRAV)
         keys = pg.key.get_pressed()
-        if keys[pg.K_LEFT] or keys[pg.K_q]:
-            self.accel.x = -PLAYER_ACC
-        if keys[pg.K_RIGHT] or keys[pg.K_d]:
-            self.accel.x = PLAYER_ACC
+        self.last_key_pressed = keys
+        self.get_keys(keys)
 
         self.accel.x += self.vel.x * PLAYER_FRICTION
 
@@ -84,9 +110,8 @@ class Player(pg.sprite.Sprite):
             self.pos.x = 0 - self.rect.width / 2
         if self.pos.x < 0 - self.rect.width / 2:
             self.pos.x = 1600 + self.rect.width / 2
-            
+
         self.rect.midbottom = self.pos
-        
 
     def animate(self):
         now = pg.time.get_ticks()
@@ -107,11 +132,25 @@ class Player(pg.sprite.Sprite):
                     self.image = self.walk_frames_l[self.current_frame]
                 self.rect = self.image.get_rect()
                 self.rect.bottom = bottom
-        
+
+        if self.crouching:
+            if now - self.last_update > 180:
+                self.last_update = now
+                self.current_frame = (
+                    self.current_frame + 1) % len(self.crouch_frame_l)
+                bottom = self.rect.bottom
+                if self.last_key_pressed[pg.K_d]:
+                    self.image = self.crouch_frame_r[self.current_frame]
+                else:
+                    self.image = self.crouch_frame_l[self.current_frame]
+                self.rect = self.image.get_rect()
+                self.rect.bottom = bottom
+
         if self.jumping:
             if now - self.last_update > 100:
                 self.last_update = now
-                self.current_frame = (self.current_frame + 1) % len(self.jumping_frames_l)
+                self.current_frame = (
+                    self.current_frame + 1) % len(self.jumping_frames_l)
                 bottom = self.rect.bottom
                 if self.vel.x > 0 or self.vel.x == 0:
                     self.image = self.jumping_frames_r[self.current_frame]
