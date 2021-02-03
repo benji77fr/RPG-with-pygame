@@ -106,10 +106,10 @@ class Player(pg.sprite.Sprite):
             self.vel.x = 0
         self.pos += self.vel + 0.5 * self.accel
 
-        if self.pos.x > 1600 + self.rect.width / 2:
+        if self.pos.x > self.game.map.rect.width + self.rect.width / 2:
             self.pos.x = 0 - self.rect.width / 2
         if self.pos.x < 0 - self.rect.width / 2:
-            self.pos.x = 1600 + self.rect.width / 2
+            self.pos.x = self.game.map.rect.width + self.rect.width / 2
 
         self.rect.midbottom = self.pos
 

@@ -12,7 +12,6 @@ class Tile(pg.sprite.Sprite):
     def __getitem__(self, i):
         return i
 
-
 class TileMap:
     def __init__(self, filename):
         tm = pytmx.load_pygame(filename, pixelapha=True)
