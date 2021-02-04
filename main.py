@@ -2,6 +2,7 @@ from spritesheet import *
 from sprites import *
 from settings import *
 from mapgen import *
+from inventory import *
 import sys
 import pygame as pg
 vec = pg.math.Vector2
@@ -41,6 +42,7 @@ class Game:
             if tile_object.name == 'player':
                 self.player = Player(self, obj_center.x, obj_center.y)
         self.camera = Camera(self.map.width, self.map.height)
+        self.inventory = Inventory(self.player, 10, 2, 2, True)
 
     def run(self):
         self.playing = True
@@ -76,11 +78,13 @@ class Game:
         self.display.blit(self.map_img, self.camera.apply(self.map))
         for sprite in self.all_sprites:
             self.display.blit(sprite.image, self.camera.apply(sprite))
+        self.inventory.draw(self.display)
         self.screen.blit(pg.transform.scale(
             self.display, self.screen.get_rect().size), (0, 0))
+        
         # self.draw_grid()
 
-        pg.display.update()
+        pg.display.flip()
 
     def events(self):
         for event in pg.event.get():
@@ -89,6 +93,8 @@ class Game:
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_ESCAPE:
                     self.quit()
+                if event.key == pg.K_b:
+                    self.inventory.toggle_inventory()
                 
 
     def show_start_screen(self):
