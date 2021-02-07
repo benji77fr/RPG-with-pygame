@@ -1,3 +1,4 @@
+from pygame import fastevent
 from spritesheet import *
 from sprites import *
 from settings import *
@@ -12,7 +13,7 @@ class Game:
     def __init__(self):
         pg.init()
         self.screen = pg.display.set_mode((WIDTH, HEIGHT))
-        self.display = pg.Surface((600, 400))
+        self.display = pg.Surface((SCALEWIDTH, SCALEHEIGHT))
         pg.display.set_caption(TITLE)
         self.clock = pg.time.Clock()
         pg.key.set_repeat(500, 100)
@@ -25,6 +26,7 @@ class Game:
         self.map_dir = os.path.join(asset_folder, 'Map')
 
         self.playersheet = Spritesheet(os.path.join(img_dir, PLAYERSHEET))
+        self.enemysheet = Spritesheet(os.path.join(img_dir, ENEMYSHEET))
 
     def new(self):
         # Initialise toute les variables et fait le setup pour un nouveau jeu
@@ -41,8 +43,10 @@ class Game:
                              tile_object.y + tile_object.height / 2)
             if tile_object.name == 'player':
                 self.player = Player(self, obj_center.x, obj_center.y)
+            if tile_object.name == 'slime':
+                self.slime = Enemy(self, obj_center.x, obj_center.y)
         self.camera = Camera(self.map.width, self.map.height)
-        self.inventory = Inventory(self.player, 10, 2, 2, True)
+        self.inventory = Inventory(self.player, 10, 5, 5, True)
 
     def run(self):
         self.playing = True
@@ -67,6 +71,11 @@ class Game:
                 self.player.pos.y = hits[0].rect.top + 0.1
                 self.player.vel.y = 0
                 self.player.jumping = False
+        if self.slime.vel.y > 0:
+            hits = pg.sprite.spritecollide(self.slime, self.ground, False)
+            if hits:
+                self.slime.pos.y = hits[0].rect.top
+                self.slime.vel.y = 0
 
     def draw_grid(self):
         for x in range(0, WIDTH, TILESIZE):
@@ -81,7 +90,7 @@ class Game:
         self.inventory.draw(self.display)
         self.screen.blit(pg.transform.scale(
             self.display, self.screen.get_rect().size), (0, 0))
-        
+
         # self.draw_grid()
 
         pg.display.flip()
@@ -95,7 +104,6 @@ class Game:
                     self.quit()
                 if event.key == pg.K_b:
                     self.inventory.toggle_inventory()
-                
 
     def show_start_screen(self):
         pass

@@ -12,6 +12,7 @@ class Tile(pg.sprite.Sprite):
     def __getitem__(self, i):
         return i
 
+
 class TileMap:
     def __init__(self, filename):
         tm = pytmx.load_pygame(filename, pixelapha=True)
@@ -48,11 +49,11 @@ class Camera:
         return rect.move(self.camera.topleft)
 
     def update(self, target):
-        x = -target.rect.centerx + int(600 / 2)
-        y = -target.rect.centery + int(400 / 2)
+        x = -target.rect.centerx + int(SCALEWIDTH / 2)
+        y = -target.rect.centery + int(SCALEHEIGHT / 2)
 
         x = min(0, x)
         y = min(0, y)
-        x = max(-(self.width - 600), x)
-        y = max(-(self.height - 400), y)
+        x = max(-(self.width - SCALEWIDTH), x)
+        y = max(-(self.height - SCALEHEIGHT), y)
         self.camera = pg.Rect(x, y, self.width, self.height)

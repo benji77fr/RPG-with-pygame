@@ -9,14 +9,17 @@ YELLOW = (255, 255, 0)
 
 
 # game settings
-WIDTH = 1200
-HEIGHT = 800
+WIDTH = 1920
+HEIGHT = 1080
+UIHEIGHT = int(HEIGHT / 3)
+SCALEWIDTH = int(WIDTH / 2)
+SCALEHEIGHT = int(HEIGHT / 2)
 FPS = 60
 TITLE = "RPG with Python"
 TILESIZE = 16
 GRIDWIDTH = WIDTH / TILESIZE
 GRIDHEIGHT = HEIGHT / TILESIZE
-
+INVTILESIZE = 16
 
 # Player settings
 PLAYER_ACC = 0.5
@@ -26,3 +29,4 @@ PLAYER_GRAV = 0.7
 
 SPRITESHEETTERRAIN = 'Grass_dirt_tileset.png'
 PLAYERSHEET = 'Player_anim_sheet.png'
+ENEMYSHEET = 'slime-Sheet.png'

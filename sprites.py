@@ -168,3 +168,53 @@ class Player(pg.sprite.Sprite):
                 self.image = self.standing_frames[self.current_frame]
                 self.rect = self.image.get_rect()
                 self.rect.bottom = bottom
+
+
+class Enemy(pg.sprite.Sprite):
+    def __init__(self, game, x, y):
+        self.groups = game.all_sprites
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.game = game
+        self.x = x
+        self.y = y
+        self.walking = False
+        self.currentFrame = 0
+        self.last_update = 0
+        self.load_images()
+        self.image = self.standingFrames[0]
+        self.rect = self.image.get_rect()
+        self.rect.center = (x, y)
+        self.pos = vec(x, y)
+        self.vel = vec(0, 0)
+        self.accel = vec(0, 0)
+
+    def load_images(self):
+        self.standingFrames = [self.game.enemysheet.get_image(0, 0, 32, 25),
+                               self.game.enemysheet.get_image(32, 0, 32, 25),
+                               self.game.enemysheet.get_image(64, 0, 32, 25)]
+
+    def update(self):
+        self.animate()
+        self.accel = vec(0, PLAYER_GRAV)
+
+        self.accel.x += self.vel.x * PLAYER_FRICTION
+        self.vel += self.accel
+
+        if abs(self.vel.x) < 0.1:
+            self.vel.x = 0
+        self.pos += self.vel + 0.5 * self.accel
+
+        self.rect.midbottom = self.pos
+
+    def animate(self):
+        now = pg.time.get_ticks()
+
+        if not self.walking:
+            if now - self.last_update > 250:
+                self.last_update = now
+                self.currentFrame = (self.currentFrame +
+                                     1) % len(self.standingFrames)
+                bottom = self.rect.bottom
+                self.image = self.standingFrames[self.currentFrame]
+                self.rect = self.image.get_rect()
+                self.rect.bottom = bottom
