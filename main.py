@@ -1,4 +1,3 @@
-from pygame import fastevent
 from spritesheet import *
 from sprites import *
 from settings import *
