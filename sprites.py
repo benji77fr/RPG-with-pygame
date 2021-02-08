@@ -32,6 +32,7 @@ class Player(pg.sprite.Sprite):
                                   self.game.playersheet.get_image(
             100, 0, 50, 37),
             self.game.playersheet.get_image(150, 0, 50, 37)]
+            
         self.standing_frames_l = [pg.transform.flip(
             frame, True, False) for frame in self.standing_frames_r]
 
@@ -41,9 +42,9 @@ class Player(pg.sprite.Sprite):
                               self.game.playersheet.get_image(200, 37, 50, 37),
                               self.game.playersheet.get_image(250, 37, 50, 37),
                               self.game.playersheet.get_image(300, 37, 50, 37)]
-        self.walk_frames_l = []
-        for frame in self.walk_frames_r:
-            self.walk_frames_l.append(pg.transform.flip(frame, True, False))
+
+        self.walk_frames_l = [pg.transform.flip(frame, True, False) for frame in self.walk_frames_r]
+                
         self.jumping_frames_r = [self.game.playersheet.get_image(0, 74, 50, 37),
                                  self.game.playersheet.get_image(
                                      50, 74, 50, 37),
@@ -61,17 +62,17 @@ class Player(pg.sprite.Sprite):
                                      0, 111, 50, 37),
                                  self.game.playersheet.get_image(
                                      50, 111, 50, 37),
-                                 self.game.playersheet.get_image(100, 111, 50, 37), ]
-        self.jumping_frames_l = []
-        for frame in self.jumping_frames_r:
-            self.jumping_frames_l.append(pg.transform.flip(frame, True, False))
+                                 self.game.playersheet.get_image(100, 111, 50, 37)]
+
+        self.jumping_frames_l = [pg.transform.flip(frame, True, False) for frame in self.jumping_frames_r]
+        
         self.crouch_frame_r = [self.game.playersheet.get_image(200, 0, 50, 37),
                                self.game.playersheet.get_image(250, 0, 50, 37),
                                self.game.playersheet.get_image(300, 0, 50, 37),
                                self.game.playersheet.get_image(0, 37, 50, 37)]
-        self.crouch_frame_l = []
-        for frame in self.crouch_frame_r:
-            self.crouch_frame_l.append(pg.transform.flip(frame, True, False))
+
+        self.crouch_frame_l = [pg.transform.flip(frame, True, False) for frame in self.crouch_frame_r]
+        
 
     def jump_cut(self):
         if self.jumping:
