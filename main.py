@@ -23,7 +23,6 @@ class Game:
         asset_folder = os.path.join(game_folder, 'Assets')
         img_dir = os.path.join(asset_folder, 'Image')
         self.map_dir = os.path.join(asset_folder, 'Map')
-
         self.playersheet = Spritesheet(os.path.join(img_dir, PLAYERSHEET))
         self.enemysheet = Spritesheet(os.path.join(img_dir, ENEMYSHEET))
 
