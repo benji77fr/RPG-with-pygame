@@ -2,7 +2,6 @@ import pygame as pg
 import pytmx
 from settings import *
 
-
 class Tile(pg.sprite.Sprite):
     def __init__(self, x, y, image):
         pg.sprite.Sprite.__init__(self)
@@ -41,6 +40,7 @@ class Camera:
         self.camera = pg.Rect(0, 0, width, height)
         self.width = width
         self.height = height
+        self.cam = pg.Vector2((0, 0))
 
     def apply(self, entity):
         return entity.rect.move(self.camera.topleft)
@@ -51,9 +51,10 @@ class Camera:
     def update(self, target):
         x = -target.rect.centerx + int(SCALEWIDTH / 2)
         y = -target.rect.centery + int(SCALEHEIGHT / 2)
+        self.cam += (pg.Vector2((x,y)) - self.cam) * 0.05
 
-        x = min(0, x)
-        y = min(0, y)
-        x = max(-(self.width - SCALEWIDTH), x)
-        y = max(-(self.height - SCALEHEIGHT), y)
-        self.camera = pg.Rect(x, y, self.width, self.height)
+        x = min(0, self.cam.x)
+        y = min(0, self.cam.y)
+        self.cam.x = max(-(self.width - SCALEWIDTH), x)
+        self.cam.y = max(-(self.height - SCALEHEIGHT), y)
+        self.camera = pg.Rect(self.cam.x, self.cam.y, self.width, self.height)

@@ -211,6 +211,11 @@ class Enemy(pg.sprite.Sprite):
             self.vel.x = 0
         self.pos += self.vel + 0.5 * self.accel
 
+        if self.game.player.pos.x > self.pos.x:
+            self.vel.x = 1
+        if self.game.player.pos.x < self.pos.x:
+            self.vel.x = -1
+
         self.rect.midbottom = self.pos
 
     def animate(self):
