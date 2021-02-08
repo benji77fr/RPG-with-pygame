@@ -32,7 +32,7 @@ class Player(pg.sprite.Sprite):
                                   self.game.playersheet.get_image(
             100, 0, 50, 37),
             self.game.playersheet.get_image(150, 0, 50, 37)]
-            
+
         self.standing_frames_l = [pg.transform.flip(
             frame, True, False) for frame in self.standing_frames_r]
 
@@ -43,8 +43,9 @@ class Player(pg.sprite.Sprite):
                               self.game.playersheet.get_image(250, 37, 50, 37),
                               self.game.playersheet.get_image(300, 37, 50, 37)]
 
-        self.walk_frames_l = [pg.transform.flip(frame, True, False) for frame in self.walk_frames_r]
-                
+        self.walk_frames_l = [pg.transform.flip(
+            frame, True, False) for frame in self.walk_frames_r]
+
         self.jumping_frames_r = [self.game.playersheet.get_image(0, 74, 50, 37),
                                  self.game.playersheet.get_image(
                                      50, 74, 50, 37),
@@ -64,15 +65,16 @@ class Player(pg.sprite.Sprite):
                                      50, 111, 50, 37),
                                  self.game.playersheet.get_image(100, 111, 50, 37)]
 
-        self.jumping_frames_l = [pg.transform.flip(frame, True, False) for frame in self.jumping_frames_r]
-        
+        self.jumping_frames_l = [pg.transform.flip(
+            frame, True, False) for frame in self.jumping_frames_r]
+
         self.crouch_frame_r = [self.game.playersheet.get_image(200, 0, 50, 37),
                                self.game.playersheet.get_image(250, 0, 50, 37),
                                self.game.playersheet.get_image(300, 0, 50, 37),
                                self.game.playersheet.get_image(0, 37, 50, 37)]
 
-        self.crouch_frame_l = [pg.transform.flip(frame, True, False) for frame in self.crouch_frame_r]
-        
+        self.crouch_frame_l = [pg.transform.flip(
+            frame, True, False) for frame in self.crouch_frame_r]
 
     def jump_cut(self):
         if self.jumping:
@@ -144,10 +146,7 @@ class Player(pg.sprite.Sprite):
                 self.current_frame = (
                     self.current_frame + 1) % len(self.crouch_frame_l)
                 bottom = self.rect.bottom
-                if self.last_key_pressed == pg.k_d:
-                    self.image = self.crouch_frame_r[self.current_frame]
-                else:
-                    self.image = self.crouch_frame_l[self.current_frame]
+                self.image = self.crouch_frame_r[self.current_frame]
                 self.rect = self.image.get_rect()
                 self.rect.bottom = bottom
 
@@ -170,10 +169,7 @@ class Player(pg.sprite.Sprite):
                 self.current_frame = (
                     self.current_frame + 1) % len(self.standing_frames_l)
                 bottom = self.rect.bottom
-                if self.last_key_pressed == pg.K_q:
-                    self.image = self.standing_frames_l[self.current_frame]
-                else:
-                    self.image = self.standing_frames_r[self.current_frame]
+                self.image = self.standing_frames_r[self.current_frame]
                 self.rect = self.image.get_rect()
                 self.rect.bottom = bottom
 
