@@ -151,7 +151,7 @@ class Player(pg.sprite.Sprite):
                 self.rect.bottom = bottom
 
         if self.jumping:
-            if now - self.last_update > 100:
+            if now - self.last_update > 110:
                 self.last_update = now
                 self.current_frame = (
                     self.current_frame + 1) % len(self.jumping_frames_l)
@@ -195,7 +195,15 @@ class Enemy(pg.sprite.Sprite):
     def load_images(self):
         self.standingFrames = [self.game.enemysheet.get_image(0, 0, 32, 25),
                                self.game.enemysheet.get_image(32, 0, 32, 25),
-                               self.game.enemysheet.get_image(64, 0, 32, 25)]
+                               self.game.enemysheet.get_image(64, 0, 32, 25),
+                               self.game.enemysheet.get_image(96, 0, 32, 25)]
+
+        self.walkingFramesR = [self.game.enemysheet.get_image(128, 0, 32, 25),
+                               self.game.enemysheet.get_image(160, 0, 32, 25),
+                               self.game.enemysheet.get_image(192, 0, 32, 25),
+                               self.game.enemysheet.get_image(224, 0, 32, 25)]
+        self.walkingFramesL = [pg.transform.flip(
+            frame, True, False) for frame in self.walkingFramesR]
 
     def update(self):
         self.animate()
@@ -204,19 +212,38 @@ class Enemy(pg.sprite.Sprite):
         self.accel.x += self.vel.x * PLAYER_FRICTION
         self.vel += self.accel
 
-        if abs(self.vel.x) < 0.1:
-            self.vel.x = 0
         self.pos += self.vel + 0.5 * self.accel
 
         if self.game.player.pos.x > self.pos.x:
             self.vel.x = 1
         if self.game.player.pos.x < self.pos.x:
             self.vel.x = -1
+        if self.game.player.pos.x == self.pos.x:
+            self.vel.x = 0
+            self.walking = False
 
         self.rect.midbottom = self.pos
 
     def animate(self):
         now = pg.time.get_ticks()
+
+        if self.vel.x != 0:
+            self.walking = True
+        else:
+            self.walking = False
+
+        if self.walking:
+            if now - self.last_update > 250:
+                self.last_update = now
+                self.currentFrame = (self.currentFrame +
+                                     1) % len(self.walkingFramesR)
+                bottom = self.rect.bottom
+                if self.vel.x > 0:
+                    self.image = self.walkingFramesL[self.currentFrame]
+                else:
+                    self.image = self.walkingFramesR[self.currentFrame]
+                self.rect = self.image.get_rect()
+                self.rect.bottom = bottom
 
         if not self.walking:
             if now - self.last_update > 250:
